@@ -1,0 +1,51 @@
+마지막 논문 간략 정리
+
+
+데이터셋- 다양한 카테고리 상의 1171개의 비디오
+
+feature
+1. Frame
+2. Audio
+3. Title,Description(Context 위한 meta data)
+
+
+
+1. 영상파트
+영상에서 미적인 frame 추출- DCNN 이용 AVA(미적 이미지를 모아놓은 데이터셋) 
+추출한 Frame에서 VGG16을 이용해서 Frame 상의 content가 뭔지 확인
+
+2. 제목과 설명- Electra를 이용해서 처리- 프레임과 비디오 간의 관계를 확인하는 용도
+
+3. 오디오 
+Trill을 이용(우리는 안할 듯?)
+
+이 세가지 modal을 만들고 각각 Context learning함
+1) Within-modal
+Audio와 Frame에만 적용(두 modal만 temporal함)
+수식은 논문에서 확인! 6page (1)
+
+2) Across-modal
+각 module 
+f, a, t, d를 각각 Context Gating한 뒤 
+수식은 page7 (3)
+
+transformed된 각 module을 concatenate해서 video로 만들고 context-gating에 다시 넣음
+수식은 page 7 (4)
+
+3) FC
+FC에 넣어서 512뉴런으로 만들고(o) 
+1000개의 DCNN을 통해 추출된 미적인 frame(v)와 o의 mse를 구해서 최소화하는 v를 찾는다.
+
+우리의 프로젝트와 연관되어 생각해볼만한 점
+1. AVA를 통해서 우리가 가지고 있는 썸네일의 미적 점수를 측정 가능하지 않을까?
+2. Frame과 title을 각각 처리해서 Context gating하고 합친 뒤 다시 Context Gating을 거침. Context를 이해하는 썸네일을 만들기 위한 노력이 보인다
+3. Description을 Thumbnail상의 텍스트를 이용하는 것은 어떤지?
+4. Electra가 정확히 뭔지는 모르겠지만 우리가 가지고 있는 Title을 전처리하는데 사용될 수 있을 듯(언어가 한국어로 안 될 수도)
+5. Title과 썸네일의 사진, 썸네일 안의 텍스트의 Relevance와 썸네일의 미적 정도를 바탕으로 평가를 해보는건 어떨까?
+조회수로 labeling을 하지 않고 가능하지 않을까?-> 여러 채널에 응용할 수 있음.
+다른 점
+
+1. 우리는 Video 자료가 아닌 Thumbnail만 가지고 있어서 V1000이 없음. 마지막 FC layer 이후에 mse를 어떻게 계산할 것인지?
+2. 오디오가 없음
+3. 여기는 적절한 영상 내 Frame중 하나를 고르는 연구, 우리는 주어진 썸네일이 영상에 적합한지 고르는 연구
+포토샵을 통해 만들어진 썸네일이나 텍스트가 들어가 있는 썸네일에 대한 평가는 이 모델로 어려울 수도?
